@@ -1,0 +1,625 @@
+Communications
+Python SDK methods for Communications operations
+
+All URIs are relative to https://api.elections.kalshi.com/trade-api/v2
+Method	HTTP request	Description
+accept_quote	PUT /communications/quotes//accept	Accept Quote
+confirm_quote	PUT /communications/quotes//confirm	Confirm Quote
+create_quote	POST /communications/quotes	Create Quote
+create_rfq	POST /communications/rfqs	Create RFQ
+delete_quote	DELETE /communications/quotes/	Delete Quote
+delete_rfq	DELETE /communications/rfqs/	Delete RFQ
+get_communications_id	GET /communications/id	Get Communications ID
+get_quote	GET /communications/quotes/	Get Quote
+get_quotes	GET /communications/quotes	Get Quotes
+get_rfq	GET /communications/rfqs/	Get RFQ
+get_rfqs	GET /communications/rfqs	Get RFQs
+​
+accept_quote
+accept_quote(quote_id, accept_quote_request)
+Accept Quote
+Accept a quote. This will require the quoter to confirm
+​
+Example
+
+Copy
+
+Ask AI
+import kalshi_python
+from kalshi_python.models.accept_quote_request import AcceptQuoteRequest
+from kalshi_python.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to https://api.elections.kalshi.com/trade-api/v2
+# See configuration.py for a list of all supported configuration parameters.
+configuration = kalshi_python.Configuration(
+    host = "https://api.elections.kalshi.com/trade-api/v2"
+)
+
+# Read private key from file
+with open('path/to/private_key.pem', 'r') as f:
+    private_key = f.read()
+
+# Configure API key authentication
+configuration.api_key_id = "your-api-key-id"
+configuration.private_key_pem = private_key
+
+# Initialize the Kalshi client
+client = kalshi_python.KalshiClient(configuration)
+
+quote_id = 'quote_id_example' # str | Quote ID
+
+accept_quote_request = kalshi_python.AcceptQuoteRequest() # AcceptQuoteRequest |
+
+try:
+    # Accept Quote
+    client.accept_quote(quote_id, accept_quote_request)
+except Exception as e:
+    print("Exception when calling CommunicationsApi->accept_quote: %s\n" % e)
+​
+Parameters
+Name	Type	Description	Notes
+quote_id	str	Quote ID	
+accept_quote_request	AcceptQuoteRequest		
+​
+Return type
+void (empty response body)
+​
+HTTP response details
+Status code	Description
+204	Quote accepted successfully
+400	Bad request - invalid input
+401	Unauthorized - authentication required
+404	Resource not found
+500	Internal server error
+[Back to top] [Back to API list] [Back to Model list] [Back to README]
+​
+confirm_quote
+confirm_quote(quote_id)
+Confirm Quote
+Confirm a quote. This will start a timer for order execution
+​
+Example
+
+Copy
+
+Ask AI
+import kalshi_python
+from kalshi_python.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to https://api.elections.kalshi.com/trade-api/v2
+# See configuration.py for a list of all supported configuration parameters.
+configuration = kalshi_python.Configuration(
+    host = "https://api.elections.kalshi.com/trade-api/v2"
+)
+
+# Read private key from file
+with open('path/to/private_key.pem', 'r') as f:
+    private_key = f.read()
+
+# Configure API key authentication
+configuration.api_key_id = "your-api-key-id"
+configuration.private_key_pem = private_key
+
+# Initialize the Kalshi client
+client = kalshi_python.KalshiClient(configuration)
+
+quote_id = 'quote_id_example' # str | Quote ID
+
+try:
+    # Confirm Quote
+    client.confirm_quote(quote_id)
+except Exception as e:
+    print("Exception when calling CommunicationsApi->confirm_quote: %s\n" % e)
+​
+Parameters
+Name	Type	Description	Notes
+quote_id	str	Quote ID	
+​
+Return type
+void (empty response body)
+​
+HTTP response details
+Status code	Description
+204	Quote confirmed successfully
+401	Unauthorized - authentication required
+404	Resource not found
+500	Internal server error
+[Back to top] [Back to API list] [Back to Model list] [Back to README]
+​
+create_quote
+CreateQuoteResponse create_quote(create_quote_request)
+Create Quote
+Create a quote in response to an RFQ
+​
+Example
+
+Copy
+
+Ask AI
+import kalshi_python
+from kalshi_python.models.create_quote_request import CreateQuoteRequest
+from kalshi_python.models.create_quote_response import CreateQuoteResponse
+from kalshi_python.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to https://api.elections.kalshi.com/trade-api/v2
+# See configuration.py for a list of all supported configuration parameters.
+configuration = kalshi_python.Configuration(
+    host = "https://api.elections.kalshi.com/trade-api/v2"
+)
+
+# Read private key from file
+with open('path/to/private_key.pem', 'r') as f:
+    private_key = f.read()
+
+# Configure API key authentication
+configuration.api_key_id = "your-api-key-id"
+configuration.private_key_pem = private_key
+
+# Initialize the Kalshi client
+client = kalshi_python.KalshiClient(configuration)
+
+create_quote_request = kalshi_python.CreateQuoteRequest() # CreateQuoteRequest |
+
+try:
+    # Create Quote
+    api_response = client.create_quote(create_quote_request)
+    print("The response of CommunicationsApi->create_quote:\n")
+    pprint(api_response)
+except Exception as e:
+    print("Exception when calling CommunicationsApi->create_quote: %s\n" % e)
+​
+Parameters
+Name	Type	Description	Notes
+create_quote_request	CreateQuoteRequest		
+​
+Return type
+CreateQuoteResponse
+​
+HTTP response details
+Status code	Description
+201	Quote created successfully
+400	Bad request - invalid input
+401	Unauthorized - authentication required
+500	Internal server error
+[Back to top] [Back to API list] [Back to Model list] [Back to README]
+​
+create_rfq
+CreateRFQResponse create_rfq(create_rfq_request)
+Create RFQ
+Create a new RFQ
+​
+Example
+
+Copy
+
+Ask AI
+import kalshi_python
+from kalshi_python.models.create_rfq_request import CreateRFQRequest
+from kalshi_python.models.create_rfq_response import CreateRFQResponse
+from kalshi_python.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to https://api.elections.kalshi.com/trade-api/v2
+# See configuration.py for a list of all supported configuration parameters.
+configuration = kalshi_python.Configuration(
+    host = "https://api.elections.kalshi.com/trade-api/v2"
+)
+
+# Read private key from file
+with open('path/to/private_key.pem', 'r') as f:
+    private_key = f.read()
+
+# Configure API key authentication
+configuration.api_key_id = "your-api-key-id"
+configuration.private_key_pem = private_key
+
+# Initialize the Kalshi client
+client = kalshi_python.KalshiClient(configuration)
+
+create_rfq_request = kalshi_python.CreateRFQRequest() # CreateRFQRequest |
+
+try:
+    # Create RFQ
+    api_response = client.create_rfq(create_rfq_request)
+    print("The response of CommunicationsApi->create_rfq:\n")
+    pprint(api_response)
+except Exception as e:
+    print("Exception when calling CommunicationsApi->create_rfq: %s\n" % e)
+​
+Parameters
+Name	Type	Description	Notes
+create_rfq_request	CreateRFQRequest		
+​
+Return type
+CreateRFQResponse
+​
+HTTP response details
+Status code	Description
+201	RFQ created successfully
+400	Bad request - invalid input
+401	Unauthorized - authentication required
+500	Internal server error
+[Back to top] [Back to API list] [Back to Model list] [Back to README]
+​
+delete_quote
+delete_quote(quote_id)
+Delete Quote
+Delete a quote, which means it can no longer be accepted
+​
+Example
+
+Copy
+
+Ask AI
+import kalshi_python
+from kalshi_python.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to https://api.elections.kalshi.com/trade-api/v2
+# See configuration.py for a list of all supported configuration parameters.
+configuration = kalshi_python.Configuration(
+    host = "https://api.elections.kalshi.com/trade-api/v2"
+)
+
+# Read private key from file
+with open('path/to/private_key.pem', 'r') as f:
+    private_key = f.read()
+
+# Configure API key authentication
+configuration.api_key_id = "your-api-key-id"
+configuration.private_key_pem = private_key
+
+# Initialize the Kalshi client
+client = kalshi_python.KalshiClient(configuration)
+
+quote_id = 'quote_id_example' # str | Quote ID
+
+try:
+    # Delete Quote
+    client.delete_quote(quote_id)
+except Exception as e:
+    print("Exception when calling CommunicationsApi->delete_quote: %s\n" % e)
+​
+Parameters
+Name	Type	Description	Notes
+quote_id	str	Quote ID	
+​
+Return type
+void (empty response body)
+​
+HTTP response details
+Status code	Description
+204	Quote deleted successfully
+401	Unauthorized - authentication required
+404	Resource not found
+500	Internal server error
+[Back to top] [Back to API list] [Back to Model list] [Back to README]
+​
+delete_rfq
+delete_rfq(rfq_id)
+Delete RFQ
+Delete an RFQ by ID
+​
+Example
+
+Copy
+
+Ask AI
+import kalshi_python
+from kalshi_python.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to https://api.elections.kalshi.com/trade-api/v2
+# See configuration.py for a list of all supported configuration parameters.
+configuration = kalshi_python.Configuration(
+    host = "https://api.elections.kalshi.com/trade-api/v2"
+)
+
+# Read private key from file
+with open('path/to/private_key.pem', 'r') as f:
+    private_key = f.read()
+
+# Configure API key authentication
+configuration.api_key_id = "your-api-key-id"
+configuration.private_key_pem = private_key
+
+# Initialize the Kalshi client
+client = kalshi_python.KalshiClient(configuration)
+
+rfq_id = 'rfq_id_example' # str | RFQ ID
+
+try:
+    # Delete RFQ
+    client.delete_rfq(rfq_id)
+except Exception as e:
+    print("Exception when calling CommunicationsApi->delete_rfq: %s\n" % e)
+​
+Parameters
+Name	Type	Description	Notes
+rfq_id	str	RFQ ID	
+​
+Return type
+void (empty response body)
+​
+HTTP response details
+Status code	Description
+204	RFQ deleted successfully
+401	Unauthorized - authentication required
+404	Resource not found
+500	Internal server error
+[Back to top] [Back to API list] [Back to Model list] [Back to README]
+​
+get_communications_id
+GetCommunicationsIDResponse get_communications_id()
+Get Communications ID
+Get the communications ID of the logged-in user
+​
+Example
+
+Copy
+
+Ask AI
+import kalshi_python
+from kalshi_python.models.get_communications_id_response import GetCommunicationsIDResponse
+from kalshi_python.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to https://api.elections.kalshi.com/trade-api/v2
+# See configuration.py for a list of all supported configuration parameters.
+configuration = kalshi_python.Configuration(
+    host = "https://api.elections.kalshi.com/trade-api/v2"
+)
+
+# Read private key from file
+with open('path/to/private_key.pem', 'r') as f:
+    private_key = f.read()
+
+# Configure API key authentication
+configuration.api_key_id = "your-api-key-id"
+configuration.private_key_pem = private_key
+
+# Initialize the Kalshi client
+client = kalshi_python.KalshiClient(configuration)
+
+try:
+    # Get Communications ID
+    api_response = client.get_communications_id()
+    print("The response of CommunicationsApi->get_communications_id:\n")
+    pprint(api_response)
+except Exception as e:
+    print("Exception when calling CommunicationsApi->get_communications_id: %s\n" % e)
+​
+Parameters
+This endpoint does not need any parameter.
+​
+Return type
+GetCommunicationsIDResponse
+​
+HTTP response details
+Status code	Description
+200	Communications ID retrieved successfully
+401	Unauthorized - authentication required
+500	Internal server error
+[Back to top] [Back to API list] [Back to Model list] [Back to README]
+​
+get_quote
+GetQuoteResponse get_quote(quote_id)
+Get Quote
+Get a particular quote by ID
+​
+Example
+
+Copy
+
+Ask AI
+import kalshi_python
+from kalshi_python.models.get_quote_response import GetQuoteResponse
+from kalshi_python.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to https://api.elections.kalshi.com/trade-api/v2
+# See configuration.py for a list of all supported configuration parameters.
+configuration = kalshi_python.Configuration(
+    host = "https://api.elections.kalshi.com/trade-api/v2"
+)
+
+# Read private key from file
+with open('path/to/private_key.pem', 'r') as f:
+    private_key = f.read()
+
+# Configure API key authentication
+configuration.api_key_id = "your-api-key-id"
+configuration.private_key_pem = private_key
+
+# Initialize the Kalshi client
+client = kalshi_python.KalshiClient(configuration)
+
+quote_id = 'quote_id_example' # str | Quote ID
+
+try:
+    # Get Quote
+    api_response = client.get_quote(quote_id)
+    print("The response of CommunicationsApi->get_quote:\n")
+    pprint(api_response)
+except Exception as e:
+    print("Exception when calling CommunicationsApi->get_quote: %s\n" % e)
+​
+Parameters
+Name	Type	Description	Notes
+quote_id	str	Quote ID	
+​
+Return type
+GetQuoteResponse
+​
+HTTP response details
+Status code	Description
+200	Quote retrieved successfully
+401	Unauthorized - authentication required
+404	Resource not found
+500	Internal server error
+[Back to top] [Back to API list] [Back to Model list] [Back to README]
+​
+get_quotes
+GetQuotesResponse get_quotes()
+Get Quotes
+Retrieve all quotes
+​
+Example
+
+Copy
+
+Ask AI
+import kalshi_python
+from kalshi_python.models.get_quotes_response import GetQuotesResponse
+from kalshi_python.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to https://api.elections.kalshi.com/trade-api/v2
+# See configuration.py for a list of all supported configuration parameters.
+configuration = kalshi_python.Configuration(
+    host = "https://api.elections.kalshi.com/trade-api/v2"
+)
+
+# Read private key from file
+with open('path/to/private_key.pem', 'r') as f:
+    private_key = f.read()
+
+# Configure API key authentication
+configuration.api_key_id = "your-api-key-id"
+configuration.private_key_pem = private_key
+
+# Initialize the Kalshi client
+client = kalshi_python.KalshiClient(configuration)
+
+try:
+    # Get Quotes
+    api_response = client.get_quotes()
+    print("The response of CommunicationsApi->get_quotes:\n")
+    pprint(api_response)
+except Exception as e:
+    print("Exception when calling CommunicationsApi->get_quotes: %s\n" % e)
+​
+Parameters
+This endpoint does not need any parameter.
+​
+Return type
+GetQuotesResponse
+​
+HTTP response details
+Status code	Description
+200	Quotes retrieved successfully
+401	Unauthorized - authentication required
+500	Internal server error
+[Back to top] [Back to API list] [Back to Model list] [Back to README]
+​
+get_rfq
+GetRFQResponse get_rfq(rfq_id)
+Get RFQ
+Get a single RFQ by ID
+​
+Example
+
+Copy
+
+Ask AI
+import kalshi_python
+from kalshi_python.models.get_rfq_response import GetRFQResponse
+from kalshi_python.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to https://api.elections.kalshi.com/trade-api/v2
+# See configuration.py for a list of all supported configuration parameters.
+configuration = kalshi_python.Configuration(
+    host = "https://api.elections.kalshi.com/trade-api/v2"
+)
+
+# Read private key from file
+with open('path/to/private_key.pem', 'r') as f:
+    private_key = f.read()
+
+# Configure API key authentication
+configuration.api_key_id = "your-api-key-id"
+configuration.private_key_pem = private_key
+
+# Initialize the Kalshi client
+client = kalshi_python.KalshiClient(configuration)
+
+rfq_id = 'rfq_id_example' # str | RFQ ID
+
+try:
+    # Get RFQ
+    api_response = client.get_rfq(rfq_id)
+    print("The response of CommunicationsApi->get_rfq:\n")
+    pprint(api_response)
+except Exception as e:
+    print("Exception when calling CommunicationsApi->get_rfq: %s\n" % e)
+​
+Parameters
+Name	Type	Description	Notes
+rfq_id	str	RFQ ID	
+​
+Return type
+GetRFQResponse
+​
+HTTP response details
+Status code	Description
+200	RFQ retrieved successfully
+401	Unauthorized - authentication required
+404	Resource not found
+500	Internal server error
+[Back to top] [Back to API list] [Back to Model list] [Back to README]
+​
+get_rfqs
+GetRFQsResponse get_rfqs()
+Get RFQs
+Retrieve all RFQs
+​
+Example
+
+Copy
+
+Ask AI
+import kalshi_python
+from kalshi_python.models.get_rfqs_response import GetRFQsResponse
+from kalshi_python.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to https://api.elections.kalshi.com/trade-api/v2
+# See configuration.py for a list of all supported configuration parameters.
+configuration = kalshi_python.Configuration(
+    host = "https://api.elections.kalshi.com/trade-api/v2"
+)
+
+# Read private key from file
+with open('path/to/private_key.pem', 'r') as f:
+    private_key = f.read()
+
+# Configure API key authentication
+configuration.api_key_id = "your-api-key-id"
+configuration.private_key_pem = private_key
+
+# Initialize the Kalshi client
+client = kalshi_python.KalshiClient(configuration)
+
+try:
+    # Get RFQs
+    api_response = client.get_rfqs()
+    print("The response of CommunicationsApi->get_rfqs:\n")
+    pprint(api_response)
+except Exception as e:
+    print("Exception when calling CommunicationsApi->get_rfqs: %s\n" % e)
+​
+Parameters
+This endpoint does not need any parameter.
+​
+Return type
+GetRFQsResponse
+​
+HTTP response details
+Status code	Description
+200	RFQs retrieved successfully
+401	Unauthorized - authentication required
+500	Internal server error

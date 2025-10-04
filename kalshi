@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# Kalshi CLI wrapper that activates virtual environment
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# Check if GUI command
+if [ "$1" = "gui" ]; then
+    echo "🚀 Starting Kalshi GUI - Obsidian Edition..."
+
+    # Start FastAPI server in background
+    source "$SCRIPT_DIR/kalshi_cli/venv/bin/activate"
+    echo "📡 Starting API server on port 8000..."
+    python3 "$SCRIPT_DIR/gui_server.py" > /dev/null 2>&1 &
+    SERVER_PID=$!
+
+    # Wait for server to be ready
+    sleep 2
+
+    # Start Electron GUI
+    echo "🖥️  Launching GUI..."
+    cd "$SCRIPT_DIR/gui" && npm run electron:dev &
+    GUI_PID=$!
+
+    # Cleanup function
+    cleanup() {
+        echo ""
+        echo "🛑 Shutting down..."
+        kill $SERVER_PID 2>/dev/null
+        kill $GUI_PID 2>/dev/null
+        exit 0
+    }
+
+    trap cleanup SIGINT SIGTERM
+
+    echo "✅ GUI is running! Press Ctrl+C to quit."
+    wait
+else
+    # Regular CLI mode
+    source "$SCRIPT_DIR/kalshi_cli/venv/bin/activate"
+    python3 "$SCRIPT_DIR/kalshi_app.py" "$@"
+fi

@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-obsidian-50/20;
+  }
+
+  body {
+    @apply bg-obsidian-300 text-white font-sans antialiased;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+      sans-serif;
+  }
+
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-obsidian-200;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-obsidian-50 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-neon-cyan;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-obsidian-200/50 backdrop-blur-glass border border-obsidian-50/20;
+  }
+
+  .widget {
+    @apply bg-obsidian-200 rounded-widget border border-obsidian-50/30 shadow-lg;
+  }
+
+  .neon-border {
+    @apply border-2 border-neon-cyan shadow-[0_0_10px_rgba(0,255,255,0.3)];
+  }
+
+  .btn-primary {
+    @apply px-4 py-2 bg-neon-cyan text-obsidian-300 rounded-lg font-semibold
+           hover:bg-neon-blue transition-all duration-200 hover:shadow-[0_0_20px_rgba(0,255,255,0.5)];
+  }
+
+  .btn-secondary {
+    @apply px-4 py-2 bg-obsidian-100 text-white rounded-lg font-semibold
+           hover:bg-obsidian-50 transition-all duration-200 border border-obsidian-50/30;
+  }
+
+  .input-obsidian {
+    @apply bg-obsidian-200 border border-obsidian-50/30 rounded-lg px-4 py-2
+           text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan
+           focus:ring-1 focus:ring-neon-cyan transition-all duration-200;
+  }
+}
