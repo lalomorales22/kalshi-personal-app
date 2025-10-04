@@ -1,4 +1,5 @@
-# Kalshi Trading Platform
+# Kalshi Personal App
+<img width="1415" height="915" alt="Screenshot 2025-10-03 at 6 09 27 PM" src="https://github.com/user-attachments/assets/7a048f7a-92a6-4454-85c0-77ceb71b2a9c" />
 
 **Fast CLI and beautiful GUI for trading on Kalshi prediction markets.**
 
