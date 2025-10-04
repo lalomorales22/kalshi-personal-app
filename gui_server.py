@@ -178,6 +178,108 @@ async def search_markets(q: str, limit: int = 50):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# Events endpoints
+@app.get("/events")
+async def get_events(
+    limit: int = 100,
+    cursor: Optional[str] = None,
+    status: Optional[str] = None,
+    series_ticker: Optional[str] = None,
+    with_nested_markets: bool = True
+):
+    try:
+        events_data = api.get_events(
+            limit=limit,
+            cursor=cursor,
+            status=status,
+            series_ticker=series_ticker,
+            with_nested_markets=with_nested_markets
+        )
+        if isinstance(events_data, dict):
+            return {
+                "events": events_data.get('events', []),
+                "cursor": events_data.get('cursor')
+            }
+        return {"events": events_data if isinstance(events_data, list) else []}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/events/{event_ticker}")
+async def get_event(event_ticker: str, with_nested_markets: bool = True):
+    try:
+        event_data = api.get_event(event_ticker, with_nested_markets=with_nested_markets)
+        return event_data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# Categories endpoint - get unique categories from series
+@app.get("/categories")
+async def get_categories():
+    try:
+        # Get all series to extract categories
+        series_data = api.get_series_list()
+        series_list = series_data.get('series', []) if isinstance(series_data, dict) else []
+
+        # Extract unique categories
+        categories = set()
+        for series in series_list:
+            category = series.get('category')
+            if category:
+                categories.add(category)
+
+        return {"categories": sorted(list(categories))}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# Series endpoints
+@app.get("/series")
+async def get_series_list(status: Optional[str] = None):
+    try:
+        series_data = api.get_series_list(status=status)
+        return series_data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/series/{series_ticker}")
+async def get_series(series_ticker: str):
+    try:
+        series_data = api.get_series(series_ticker)
+        return series_data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# Trades endpoint
+@app.get("/markets/trades")
+async def get_trades(
+    ticker: Optional[str] = None,
+    limit: int = 100,
+    cursor: Optional[str] = None,
+    min_ts: Optional[int] = None,
+    max_ts: Optional[int] = None
+):
+    try:
+        trades_data = api.get_trades(
+            ticker=ticker,
+            limit=limit,
+            cursor=cursor,
+            min_ts=min_ts,
+            max_ts=max_ts
+        )
+        if isinstance(trades_data, dict):
+            return {
+                "trades": trades_data.get('trades', []),
+                "cursor": trades_data.get('cursor')
+            }
+        return {"trades": trades_data if isinstance(trades_data, list) else []}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 # Portfolio endpoints
 @app.get("/portfolio/balance")
 async def get_balance():
@@ -195,10 +297,34 @@ async def get_balance():
 
 
 @app.get("/portfolio/positions")
-async def get_positions():
+async def get_positions(
+    ticker: Optional[str] = None,
+    event_ticker: Optional[str] = None,
+    limit: int = 100,
+    cursor: Optional[str] = None
+):
     try:
-        positions = api.get_positions()
-        return {"positions": positions if isinstance(positions, list) else []}
+        # Get positions from API
+        positions_data = api.get_positions(
+            ticker=ticker,
+            event_ticker=event_ticker,
+            limit=limit,
+            cursor=cursor
+        )
+
+        # Handle response format - could be dict with market_positions/event_positions or list
+        if isinstance(positions_data, dict):
+            market_positions = positions_data.get('market_positions', [])
+            event_positions = positions_data.get('event_positions', [])
+
+            return {
+                "positions": market_positions,
+                "event_positions": event_positions,
+                "market_positions": market_positions,
+                "cursor": positions_data.get('cursor')
+            }
+        else:
+            return {"positions": positions_data if isinstance(positions_data, list) else []}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -206,8 +332,58 @@ async def get_positions():
 @app.get("/portfolio/orders")
 async def get_orders(status: Optional[str] = None):
     try:
-        orders = api.get_orders(status=status)
-        return {"orders": orders if isinstance(orders, list) else []}
+        orders_data = api.get_orders(status=status)
+        # Handle dict response with 'orders' key or direct list
+        if isinstance(orders_data, dict):
+            orders = orders_data.get('orders', [])
+        else:
+            orders = orders_data if isinstance(orders_data, list) else []
+        return {"orders": orders}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/portfolio/fills")
+async def get_fills(
+    ticker: Optional[str] = None,
+    limit: int = 100,
+    cursor: Optional[str] = None
+):
+    try:
+        fills_data = api.get_fills(ticker=ticker, limit=limit, cursor=cursor)
+        # Handle dict response with 'fills' key or direct list
+        if isinstance(fills_data, dict):
+            fills = fills_data.get('fills', [])
+            return {
+                "fills": fills,
+                "cursor": fills_data.get('cursor')
+            }
+        else:
+            fills = fills_data if isinstance(fills_data, list) else []
+            return {"fills": fills}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/portfolio/settlements")
+async def get_settlements(
+    limit: int = 100,
+    cursor: Optional[str] = None
+):
+    try:
+        settlements_data = api.get_settlements(
+            limit=limit,
+            cursor=cursor
+        )
+        # Handle dict response
+        if isinstance(settlements_data, dict):
+            settlements = settlements_data.get('settlements', [])
+            return {
+                "settlements": settlements,
+                "cursor": settlements_data.get('cursor')
+            }
+        else:
+            return {"settlements": settlements_data if isinstance(settlements_data, list) else []}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

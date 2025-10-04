@@ -48,21 +48,30 @@ class KalshiAPI:
 
     def get_positions(self, ticker: Optional[str] = None,
                      event_ticker: Optional[str] = None,
-                     limit: int = 100) -> List[Dict[str, Any]]:
+                     count_down: Optional[int] = None,
+                     count_up: Optional[int] = None,
+                     limit: int = 100,
+                     cursor: Optional[str] = None) -> Dict[str, Any]:
         """Get positions.
 
         Args:
             ticker: Filter by market ticker
             event_ticker: Filter by event ticker
+            count_down: Filter positions with count down
+            count_up: Filter positions with count up
             limit: Maximum number of results
+            cursor: Pagination cursor
 
         Returns:
-            List of positions
+            Positions data with market_positions and event_positions
         """
         response = self.client.get_positions(
             ticker=ticker,
             event_ticker=event_ticker,
-            limit=limit
+            count_down=count_down,
+            count_up=count_up,
+            limit=limit,
+            cursor=cursor
         )
         return self._parse_response(response)
 
@@ -87,17 +96,36 @@ class KalshiAPI:
         return self._parse_response(response)
 
     def get_fills(self, ticker: Optional[str] = None,
-                  limit: int = 100) -> List[Dict[str, Any]]:
+                  limit: int = 100,
+                  cursor: Optional[str] = None) -> List[Dict[str, Any]]:
         """Get fills.
 
         Args:
             ticker: Filter by market ticker
             limit: Maximum number of results
+            cursor: Pagination cursor
 
         Returns:
             List of fills
         """
-        response = self.client.get_fills(ticker=ticker, limit=limit)
+        response = self.client.get_fills(ticker=ticker, limit=limit, cursor=cursor)
+        return self._parse_response(response)
+
+    def get_settlements(self, limit: int = 100,
+                       cursor: Optional[str] = None) -> Dict[str, Any]:
+        """Get settlements.
+
+        Args:
+            limit: Maximum number of results
+            cursor: Pagination cursor
+
+        Returns:
+            Settlements data with cursor
+        """
+        response = self.client.get_settlements(
+            limit=limit,
+            cursor=cursor
+        )
         return self._parse_response(response)
 
     # Markets
@@ -157,35 +185,93 @@ class KalshiAPI:
 
     # Events
     def get_events(self, limit: int = 100,
+                   cursor: Optional[str] = None,
                    status: Optional[str] = None,
-                   series_ticker: Optional[str] = None) -> List[Dict[str, Any]]:
+                   series_ticker: Optional[str] = None,
+                   with_nested_markets: bool = False) -> Dict[str, Any]:
         """Get events.
 
         Args:
             limit: Maximum number of results
+            cursor: Pagination cursor
             status: Filter by status
             series_ticker: Filter by series ticker
+            with_nested_markets: Include markets within event objects
 
         Returns:
-            List of events
+            Events data with cursor
         """
         response = self.client.get_events(
             limit=limit,
+            cursor=cursor,
             status=status,
-            series_ticker=series_ticker
+            series_ticker=series_ticker,
+            with_nested_markets=with_nested_markets
         )
         return self._parse_response(response)
 
-    def get_event(self, event_ticker: str) -> Dict[str, Any]:
+    def get_event(self, event_ticker: str, with_nested_markets: bool = False) -> Dict[str, Any]:
         """Get a single event.
 
         Args:
             event_ticker: Event ticker
+            with_nested_markets: Include markets within event object
 
         Returns:
             Event data
         """
-        response = self.client.get_event(event_ticker)
+        response = self.client.get_event(event_ticker, with_nested_markets=with_nested_markets)
+        return self._parse_response(response)
+
+    # Series
+    def get_series_list(self, status: Optional[str] = None) -> Dict[str, Any]:
+        """Get series list.
+
+        Args:
+            status: Filter by status
+
+        Returns:
+            Series list data
+        """
+        response = self.client._series_api.get_series(status=status)
+        return self._parse_response(response)
+
+    def get_series(self, series_ticker: str) -> Dict[str, Any]:
+        """Get a single series.
+
+        Args:
+            series_ticker: Series ticker
+
+        Returns:
+            Series data
+        """
+        response = self.client._series_api.get_series_by_ticker(series_ticker)
+        return self._parse_response(response)
+
+    def get_trades(self, ticker: Optional[str] = None,
+                   limit: int = 100,
+                   cursor: Optional[str] = None,
+                   min_ts: Optional[int] = None,
+                   max_ts: Optional[int] = None) -> Dict[str, Any]:
+        """Get market trades.
+
+        Args:
+            ticker: Filter by market ticker
+            limit: Maximum number of results
+            cursor: Pagination cursor
+            min_ts: Minimum timestamp
+            max_ts: Maximum timestamp
+
+        Returns:
+            Trades data with cursor
+        """
+        response = self.client._markets_api.get_trades(
+            ticker=ticker,
+            limit=limit,
+            cursor=cursor,
+            min_ts=min_ts,
+            max_ts=max_ts
+        )
         return self._parse_response(response)
 
     # Trading

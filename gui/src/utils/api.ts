@@ -32,14 +32,74 @@ export const api = {
     return data.markets;
   },
 
+  // Events
+  getEvents: async (params?: {
+    limit?: number;
+    cursor?: string;
+    status?: string;
+    series_ticker?: string;
+    with_nested_markets?: boolean;
+  }) => {
+    const { data } = await axios.get<{ events: any[]; cursor?: string }>(`${API_BASE}/events`, { params });
+    return data;
+  },
+
+  getEvent: async (eventTicker: string, withNestedMarkets: boolean = true) => {
+    const { data } = await axios.get(`${API_BASE}/events/${eventTicker}`, {
+      params: { with_nested_markets: withNestedMarkets }
+    });
+    return data;
+  },
+
+  // Categories
+  getCategories: async () => {
+    const { data } = await axios.get<{ categories: string[] }>(`${API_BASE}/categories`);
+    return data.categories;
+  },
+
+  // Series
+  getSeriesList: async (params?: {
+    status?: string;
+  }) => {
+    const { data } = await axios.get(`${API_BASE}/series`, { params });
+    return data;
+  },
+
+  getSeries: async (seriesTicker: string) => {
+    const { data } = await axios.get(`${API_BASE}/series/${seriesTicker}`);
+    return data;
+  },
+
+  // Trades
+  getTrades: async (params?: {
+    ticker?: string;
+    limit?: number;
+    cursor?: string;
+    min_ts?: number;
+    max_ts?: number;
+  }) => {
+    const { data } = await axios.get<{ trades: any[]; cursor?: string }>(`${API_BASE}/markets/trades`, { params });
+    return data;
+  },
+
   // Portfolio
   getBalance: async () => {
     const { data } = await axios.get<Balance>(`${API_BASE}/portfolio/balance`);
     return data;
   },
 
-  getPositions: async () => {
-    const { data } = await axios.get<{ positions: Position[] }>(`${API_BASE}/portfolio/positions`);
+  getPositions: async (params?: {
+    ticker?: string;
+    event_ticker?: string;
+    limit?: number;
+    cursor?: string;
+  }) => {
+    const { data } = await axios.get<{
+      positions: Position[];
+      event_positions?: any[];
+      market_positions?: Position[];
+      cursor?: string;
+    }>(`${API_BASE}/portfolio/positions`, { params });
     return data.positions;
   },
 
@@ -48,6 +108,23 @@ export const api = {
       params: { status }
     });
     return data.orders;
+  },
+
+  getFills: async (params?: {
+    ticker?: string;
+    limit?: number;
+    cursor?: string;
+  }) => {
+    const { data } = await axios.get<{ fills: any[]; cursor?: string }>(`${API_BASE}/portfolio/fills`, { params });
+    return data;
+  },
+
+  getSettlements: async (params?: {
+    limit?: number;
+    cursor?: string;
+  }) => {
+    const { data } = await axios.get<{ settlements: any[]; cursor?: string }>(`${API_BASE}/portfolio/settlements`, { params });
+    return data;
   },
 
   // Trading

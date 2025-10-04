@@ -1,340 +1,771 @@
-Markets
-Python SDK methods for Markets operations
+Get Events
 
-All URIs are relative to https://api.elections.kalshi.com/trade-api/v2
-Method	HTTP request	Description
-get_market	GET /markets/	Get Market
-get_market_candlesticks	GET /series//markets//candlesticks	Get Market Candlesticks
-get_market_orderbook	GET /markets//orderbook	Get Market Orderbook
-get_markets	GET /markets	Get Markets
-get_trades	GET /markets/trades	Get Trades
-​
-get_market
-GetMarketResponse get_market(ticker)
-Get Market
-Get a single market by its ticker.
-A market represents a specific binary outcome within an event that users can trade on (e.g., “Will candidate X win?”). Markets have yes/no positions, current prices, volume, and settlement rules.
-​
-Example
 
 Copy
 
 Ask AI
-import kalshi_python
-from kalshi_python.models.get_market_response import GetMarketResponse
-from kalshi_python.rest import ApiException
-from pprint import pprint
+curl --request GET \
+  --url https://api.elections.kalshi.com/trade-api/v2/events
 
-# Defining the host is optional and defaults to https://api.elections.kalshi.com/trade-api/v2
-# See configuration.py for a list of all supported configuration parameters.
-configuration = kalshi_python.Configuration(
-    host = "https://api.elections.kalshi.com/trade-api/v2"
-)
-
-# Read private key from file
-with open('path/to/private_key.pem', 'r') as f:
-    private_key = f.read()
-
-# Configure API key authentication
-configuration.api_key_id = "your-api-key-id"
-configuration.private_key_pem = private_key
-
-# Initialize the Kalshi client
-client = kalshi_python.KalshiClient(configuration)
-
-ticker = 'ticker_example' # str | Market ticker
-
-try:
-    # Get Market
-    api_response = client.get_market(ticker)
-    print("The response of MarketsApi->get_market:\n")
-    pprint(api_response)
-except Exception as e:
-    print("Exception when calling MarketsApi->get_market: %s\n" % e)
-​
-Parameters
-Name	Type	Description	Notes
-ticker	str	Market ticker	
-​
-Return type
-GetMarketResponse
-​
-HTTP response details
-Status code	Description
-200	Market retrieved successfully
-401	Unauthorized - authentication required
-404	Resource not found
-500	Internal server error
-[Back to top] [Back to API list] [Back to Model list] [Back to README]
-​
-get_market_candlesticks
-GetMarketCandlesticksResponse get_market_candlesticks(ticker, market_ticker, start_ts=start_ts, end_ts=end_ts, period_interval=period_interval)
-Get Market Candlesticks
-Get candlestick data for a market within a series
-​
-Example
+200
 
 Copy
 
 Ask AI
-import kalshi_python
-from kalshi_python.models.get_market_candlesticks_response import GetMarketCandlesticksResponse
-from kalshi_python.rest import ApiException
-from pprint import pprint
+{
+  "cursor": "<string>",
+  "events": [
+    {
+      "available_on_brokers": true,
+      "category": "<string>",
+      "collateral_return_type": "<string>",
+      "event_ticker": "<string>",
+      "markets": [
+        {
+          "ticker": "<string>",
+          "event_ticker": "<string>",
+          "market_type": "<string>",
+          "title": "<string>",
+          "subtitle": "<string>",
+          "yes_sub_title": "<string>",
+          "no_sub_title": "<string>",
+          "open_time": "2023-11-07T05:31:56Z",
+          "close_time": "2023-11-07T05:31:56Z",
+          "expiration_time": "2023-11-07T05:31:56Z",
+          "latest_expiration_time": "2023-11-07T05:31:56Z",
+          "settlement_timer_seconds": 123,
+          "status": "<string>",
+          "response_price_units": "<string>",
+          "notional_value": 123,
+          "notional_value_dollars": "0.2300",
+          "tick_size": 123,
+          "yes_bid": 123,
+          "yes_bid_dollars": "0.2300",
+          "yes_ask": 123,
+          "yes_ask_dollars": "0.2300",
+          "no_bid": 123,
+          "no_bid_dollars": "0.2300",
+          "no_ask": 123,
+          "no_ask_dollars": "0.2300",
+          "last_price": 123,
+          "last_price_dollars": "0.2300",
+          "previous_yes_bid": 123,
+          "previous_yes_bid_dollars": "0.2300",
+          "previous_yes_ask": 123,
+          "previous_yes_ask_dollars": "0.2300",
+          "previous_price": 123,
+          "previous_price_dollars": "0.2300",
+          "volume": 123,
+          "volume_24h": 123,
+          "liquidity": 123,
+          "liquidity_dollars": "0.2300",
+          "open_interest": 123,
+          "result": "<string>",
+          "can_close_early": true,
+          "expiration_value": "<string>",
+          "category": "<string>",
+          "risk_limit_cents": 123,
+          "rules_primary": "<string>",
+          "rules_secondary": "<string>",
+          "settlement_value": 123,
+          "settlement_value_dollars": "0.2300"
+        }
+      ],
+      "mutually_exclusive": true,
+      "price_level_structure": "<string>",
+      "series_ticker": "<string>",
+      "strike_date": "<any>",
+      "strike_period": "<string>",
+      "sub_title": "<string>",
+      "title": "<string>"
+    }
+  ]
+}
+Get Events
+Endpoint for getting data about all events. An event represents a real-world occurrence that can be traded on, such as an election, sports game, or economic indicator release. Events contain one or more markets where users can place trades on different outcomes. This endpoint returns a paginated response. Use the ‘limit’ parameter to control page size (1-200, defaults to 100). The response includes a ‘cursor’ field - pass this value in the ‘cursor’ parameter of your next request to get the next page. An empty cursor indicates no more pages are available.
 
-# Defining the host is optional and defaults to https://api.elections.kalshi.com/trade-api/v2
-# See configuration.py for a list of all supported configuration parameters.
-configuration = kalshi_python.Configuration(
-    host = "https://api.elections.kalshi.com/trade-api/v2"
-)
+GET
+/
+events
 
-# Read private key from file
-with open('path/to/private_key.pem', 'r') as f:
-    private_key = f.read()
-
-# Configure API key authentication
-configuration.api_key_id = "your-api-key-id"
-configuration.private_key_pem = private_key
-
-# Initialize the Kalshi client
-client = kalshi_python.KalshiClient(configuration)
-
-ticker = 'ticker_example' # str | The series ticker
-
-market_ticker = 'market_ticker_example' # str | The market ticker
-
-start_ts = 56 # int | Start timestamp for the range (optional)
-
-end_ts = 56 # int | End timestamp for the range (optional)
-
-period_interval = 'period_interval_example' # str | Period interval for candlesticks (e.g., 1m, 5m, 1h, 1d) (optional)
-
-try:
-    # Get Market Candlesticks
-    api_response = client.get_market_candlesticks(ticker, market_ticker, start_ts=start_ts, end_ts=end_ts, period_interval=period_interval)
-    print("The response of MarketsApi->get_market_candlesticks:\n")
-    pprint(api_response)
-except Exception as e:
-    print("Exception when calling MarketsApi->get_market_candlesticks: %s\n" % e)
+Try it
+Query Parameters
 ​
-Parameters
-Name	Type	Description	Notes
-ticker	str	The series ticker	
-market_ticker	str	The market ticker	
-start_ts	int	Start timestamp for the range	[optional]
-end_ts	int	End timestamp for the range	[optional]
-period_interval	str	Period interval for candlesticks (e.g., 1m, 5m, 1h, 1d)	[optional]
+limit
+integer
+Parameter to specify the number of results per page. Defaults to 100. Maximum value is 200.
+
 ​
-Return type
-GetMarketCandlesticksResponse
+cursor
+string
+Parameter to specify the pagination cursor. Use the cursor value returned from the previous response to get the next page of results. Leave empty for the first page.
+
 ​
-HTTP response details
-Status code	Description
-200	Candlesticks retrieved successfully
-400	Bad request - invalid input
-401	Unauthorized - authentication required
-404	Resource not found
-500	Internal server error
-[Back to top] [Back to API list] [Back to Model list] [Back to README]
+with_nested_markets
+boolean
+Parameter to specify if nested markets should be included in the response. When true, each event will include a 'markets' field containing a list of Market objects associated with that event.
+
 ​
-get_market_orderbook
-GetMarketOrderbookResponse get_market_orderbook(ticker, depth=depth)
-Get Market Orderbook
-Get the orderbook for a market
+status
+string
+Filter by event status. Possible values: 'open', 'closed', 'settled'. Leave empty to return events with any status.
+
 ​
-Example
+series_ticker
+string
+Filter events by series ticker. Returns only events belonging to the specified series.
+
+​
+min_close_ts
+integer
+Filter events with at least one market with close timestamp greater than this Unix timestamp (in seconds).
+
+Response
+200 - application/json
+​
+cursor
+string
+Pagination cursor for the next page. Empty if there are no more results.
+
+​
+events
+object[]
+
+
+
+
+Get Event
+
 
 Copy
 
 Ask AI
-import kalshi_python
-from kalshi_python.models.get_market_orderbook_response import GetMarketOrderbookResponse
-from kalshi_python.rest import ApiException
-from pprint import pprint
+curl --request GET \
+  --url https://api.elections.kalshi.com/trade-api/v2/events/{event_ticker}
 
-# Defining the host is optional and defaults to https://api.elections.kalshi.com/trade-api/v2
-# See configuration.py for a list of all supported configuration parameters.
-configuration = kalshi_python.Configuration(
-    host = "https://api.elections.kalshi.com/trade-api/v2"
-)
+200
 
-# Read private key from file
-with open('path/to/private_key.pem', 'r') as f:
-    private_key = f.read()
+Copy
 
-# Configure API key authentication
-configuration.api_key_id = "your-api-key-id"
-configuration.private_key_pem = private_key
+Ask AI
+{
+  "event": {
+    "available_on_brokers": true,
+    "category": "<string>",
+    "collateral_return_type": "<string>",
+    "event_ticker": "<string>",
+    "markets": [
+      {
+        "ticker": "<string>",
+        "event_ticker": "<string>",
+        "market_type": "<string>",
+        "title": "<string>",
+        "subtitle": "<string>",
+        "yes_sub_title": "<string>",
+        "no_sub_title": "<string>",
+        "open_time": "2023-11-07T05:31:56Z",
+        "close_time": "2023-11-07T05:31:56Z",
+        "expiration_time": "2023-11-07T05:31:56Z",
+        "latest_expiration_time": "2023-11-07T05:31:56Z",
+        "settlement_timer_seconds": 123,
+        "status": "<string>",
+        "response_price_units": "<string>",
+        "notional_value": 123,
+        "notional_value_dollars": "0.2300",
+        "tick_size": 123,
+        "yes_bid": 123,
+        "yes_bid_dollars": "0.2300",
+        "yes_ask": 123,
+        "yes_ask_dollars": "0.2300",
+        "no_bid": 123,
+        "no_bid_dollars": "0.2300",
+        "no_ask": 123,
+        "no_ask_dollars": "0.2300",
+        "last_price": 123,
+        "last_price_dollars": "0.2300",
+        "previous_yes_bid": 123,
+        "previous_yes_bid_dollars": "0.2300",
+        "previous_yes_ask": 123,
+        "previous_yes_ask_dollars": "0.2300",
+        "previous_price": 123,
+        "previous_price_dollars": "0.2300",
+        "volume": 123,
+        "volume_24h": 123,
+        "liquidity": 123,
+        "liquidity_dollars": "0.2300",
+        "open_interest": 123,
+        "result": "<string>",
+        "can_close_early": true,
+        "expiration_value": "<string>",
+        "category": "<string>",
+        "risk_limit_cents": 123,
+        "rules_primary": "<string>",
+        "rules_secondary": "<string>",
+        "settlement_value": 123,
+        "settlement_value_dollars": "0.2300"
+      }
+    ],
+    "mutually_exclusive": true,
+    "price_level_structure": "<string>",
+    "series_ticker": "<string>",
+    "strike_date": "<any>",
+    "strike_period": "<string>",
+    "sub_title": "<string>",
+    "title": "<string>"
+  },
+  "markets": [
+    {
+      "ticker": "<string>",
+      "event_ticker": "<string>",
+      "market_type": "<string>",
+      "title": "<string>",
+      "subtitle": "<string>",
+      "yes_sub_title": "<string>",
+      "no_sub_title": "<string>",
+      "open_time": "2023-11-07T05:31:56Z",
+      "close_time": "2023-11-07T05:31:56Z",
+      "expiration_time": "2023-11-07T05:31:56Z",
+      "latest_expiration_time": "2023-11-07T05:31:56Z",
+      "settlement_timer_seconds": 123,
+      "status": "<string>",
+      "response_price_units": "<string>",
+      "notional_value": 123,
+      "notional_value_dollars": "0.2300",
+      "tick_size": 123,
+      "yes_bid": 123,
+      "yes_bid_dollars": "0.2300",
+      "yes_ask": 123,
+      "yes_ask_dollars": "0.2300",
+      "no_bid": 123,
+      "no_bid_dollars": "0.2300",
+      "no_ask": 123,
+      "no_ask_dollars": "0.2300",
+      "last_price": 123,
+      "last_price_dollars": "0.2300",
+      "previous_yes_bid": 123,
+      "previous_yes_bid_dollars": "0.2300",
+      "previous_yes_ask": 123,
+      "previous_yes_ask_dollars": "0.2300",
+      "previous_price": 123,
+      "previous_price_dollars": "0.2300",
+      "volume": 123,
+      "volume_24h": 123,
+      "liquidity": 123,
+      "liquidity_dollars": "0.2300",
+      "open_interest": 123,
+      "result": "<string>",
+      "can_close_early": true,
+      "expiration_value": "<string>",
+      "category": "<string>",
+      "risk_limit_cents": 123,
+      "rules_primary": "<string>",
+      "rules_secondary": "<string>",
+      "settlement_value": 123,
+      "settlement_value_dollars": "0.2300"
+    }
+  ]
+}
 
-# Initialize the Kalshi client
-client = kalshi_python.KalshiClient(configuration)
+Get Event
+Endpoint for getting data about an event by its ticker. An event represents a real-world occurrence that can be traded on, such as an election, sports game, or economic indicator release. Events contain one or more markets where users can place trades on different outcomes.
 
-ticker = 'ticker_example' # str | Market ticker
+GET
+/
+events
+/
+{event_ticker}
 
-depth = 10 # int | Depth of the orderbook to retrieve (optional) (default to 10)
-
-try:
-    # Get Market Orderbook
-    api_response = client.get_market_orderbook(ticker, depth=depth)
-    print("The response of MarketsApi->get_market_orderbook:\n")
-    pprint(api_response)
-except Exception as e:
-    print("Exception when calling MarketsApi->get_market_orderbook: %s\n" % e)
+Try it
+Path Parameters
 ​
-Parameters
-Name	Type	Description	Notes
-ticker	str	Market ticker	
-depth	int	Depth of the orderbook to retrieve	[optional] [default to 10]
+event_ticker
+stringrequired
+Event ticker
+
+Query Parameters
 ​
-Return type
-GetMarketOrderbookResponse
+with_nested_markets
+boolean
+If true, markets are included within the event object. If false (default), markets are returned as a separate top-level field in the response.
+
+Response
+200 - application/json
 ​
-HTTP response details
-Status code	Description
-200	Orderbook retrieved successfully
-401	Unauthorized - authentication required
-404	Resource not found
-500	Internal server error
-[Back to top] [Back to API list] [Back to Model list] [Back to README]
+event
+object
+Show child attributes
+
 ​
-get_markets
-GetMarketsResponse get_markets(limit=limit, cursor=cursor, event_ticker=event_ticker, series_ticker=series_ticker, max_close_ts=max_close_ts, min_close_ts=min_close_ts, status=status, tickers=tickers)
+markets
+object[]
+
+
+Get Event Metadata
+
+
+Copy
+
+Ask AI
+curl --request GET \
+  --url https://api.elections.kalshi.com/trade-api/v2/events/{event_ticker}/metadata
+
+200
+
+Copy
+
+Ask AI
+{
+  "competition": "<string>",
+  "competition_scope": "<string>",
+  "image_url": "<string>",
+  "settlement_sources": [
+    {
+      "name": "<string>",
+      "url": "<string>"
+    }
+  ]
+}
+
+
+Get Event Metadata
+Endpoint for getting metadata about an event by its ticker. Returns only the metadata information for an event.
+
+GET
+/
+events
+/
+{event_ticker}
+/
+metadata
+
+Try it
+Path Parameters
+​
+event_ticker
+stringrequired
+Event ticker
+
+Response
+200 - application/json
+​
+competition
+string
+​
+competition_scope
+string
+​
+image_url
+string
+​
+settlement_sources
+object[]
+
 Get Markets
-List and discover markets on Kalshi.
-A market represents a specific binary outcome within an event that users can trade on (e.g., “Will candidate X win?”). Markets have yes/no positions, current prices, volume, and settlement rules.
-This endpoint returns a paginated response. Use the ‘limit’ parameter to control page size (1-1000, defaults to 100). The response includes a ‘cursor’ field - pass this value in the ‘cursor’ parameter of your next request to get the next page. An empty cursor indicates no more pages are available.
-​
-Example
+
 
 Copy
 
 Ask AI
-import kalshi_python
-from kalshi_python.models.get_markets_response import GetMarketsResponse
-from kalshi_python.rest import ApiException
-from pprint import pprint
+curl --request GET \
+  --url https://api.elections.kalshi.com/trade-api/v2/markets
 
-# Defining the host is optional and defaults to https://api.elections.kalshi.com/trade-api/v2
-# See configuration.py for a list of all supported configuration parameters.
-configuration = kalshi_python.Configuration(
-    host = "https://api.elections.kalshi.com/trade-api/v2"
-)
+200
 
-# Read private key from file
-with open('path/to/private_key.pem', 'r') as f:
-    private_key = f.read()
+Copy
 
-# Configure API key authentication
-configuration.api_key_id = "your-api-key-id"
-configuration.private_key_pem = private_key
+Ask AI
+{
+  "cursor": "<string>",
+  "markets": [
+    {
+      "ticker": "<string>",
+      "event_ticker": "<string>",
+      "market_type": "<string>",
+      "title": "<string>",
+      "subtitle": "<string>",
+      "yes_sub_title": "<string>",
+      "no_sub_title": "<string>",
+      "open_time": "2023-11-07T05:31:56Z",
+      "close_time": "2023-11-07T05:31:56Z",
+      "expiration_time": "2023-11-07T05:31:56Z",
+      "latest_expiration_time": "2023-11-07T05:31:56Z",
+      "settlement_timer_seconds": 123,
+      "status": "<string>",
+      "response_price_units": "<string>",
+      "notional_value": 123,
+      "notional_value_dollars": "0.2300",
+      "tick_size": 123,
+      "yes_bid": 123,
+      "yes_bid_dollars": "0.2300",
+      "yes_ask": 123,
+      "yes_ask_dollars": "0.2300",
+      "no_bid": 123,
+      "no_bid_dollars": "0.2300",
+      "no_ask": 123,
+      "no_ask_dollars": "0.2300",
+      "last_price": 123,
+      "last_price_dollars": "0.2300",
+      "previous_yes_bid": 123,
+      "previous_yes_bid_dollars": "0.2300",
+      "previous_yes_ask": 123,
+      "previous_yes_ask_dollars": "0.2300",
+      "previous_price": 123,
+      "previous_price_dollars": "0.2300",
+      "volume": 123,
+      "volume_24h": 123,
+      "liquidity": 123,
+      "liquidity_dollars": "0.2300",
+      "open_interest": 123,
+      "result": "<string>",
+      "can_close_early": true,
+      "expiration_value": "<string>",
+      "category": "<string>",
+      "risk_limit_cents": 123,
+      "rules_primary": "<string>",
+      "rules_secondary": "<string>",
+      "settlement_value": 123,
+      "settlement_value_dollars": "0.2300"
+    }
+  ]
+}
 
-# Initialize the Kalshi client
-client = kalshi_python.KalshiClient(configuration)
+Get Markets
+Endpoint for listing and discovering markets on Kalshi. A market represents a specific binary outcome within an event that users can trade on (e.g., “Will candidate X win?”). Markets have yes/no positions, current prices, volume, and settlement rules. This endpoint returns a paginated response. Use the ‘limit’ parameter to control page size (1-1000, defaults to 100). The response includes a ‘cursor’ field - pass this value in the ‘cursor’ parameter of your next request to get the next page. An empty cursor indicates no more pages are available.
 
-limit = 100 # int | Number of results per page. Defaults to 100. Maximum value is 1000. (optional) (default to 100)
+GET
+/
+markets
 
-cursor = 'cursor_example' # str | Pagination cursor. Use the cursor value returned from the previous response to get the next page of results. Leave empty for the first page. (optional)
-
-event_ticker = 'event_ticker_example' # str | Filter by event ticker (optional)
-
-series_ticker = 'series_ticker_example' # str | Filter by series ticker (optional)
-
-max_close_ts = 56 # int | Filter items that close before this Unix timestamp (optional)
-
-min_close_ts = 56 # int | Filter items that close after this Unix timestamp (optional)
-
-status = 'status_example' # str | Filter by market status. Comma-separated list. Possible values are 'initialized', 'open', 'closed', 'settled', 'determined'. Note that the API accepts 'open' for filtering but returns 'active' in the response. Leave empty to return markets with any status. (optional)
-
-tickers = 'tickers_example' # str | Filter by specific market tickers. Comma-separated list of market tickers to retrieve. (optional)
-
-try:
-    # Get Markets
-    api_response = client.get_markets(limit=limit, cursor=cursor, event_ticker=event_ticker, series_ticker=series_ticker, max_close_ts=max_close_ts, min_close_ts=min_close_ts, status=status, tickers=tickers)
-    print("The response of MarketsApi->get_markets:\n")
-    pprint(api_response)
-except Exception as e:
-    print("Exception when calling MarketsApi->get_markets: %s\n" % e)
+Try it
+Query Parameters
 ​
-Parameters
-Name	Type	Description	Notes
-limit	int	Number of results per page. Defaults to 100. Maximum value is 1000.	[optional] [default to 100]
-cursor	str	Pagination cursor. Use the cursor value returned from the previous response to get the next page of results. Leave empty for the first page.	[optional]
-event_ticker	str	Filter by event ticker	[optional]
-series_ticker	str	Filter by series ticker	[optional]
-max_close_ts	int	Filter items that close before this Unix timestamp	[optional]
-min_close_ts	int	Filter items that close after this Unix timestamp	[optional]
-status	str	Filter by market status. Comma-separated list. Possible values are ‘initialized’, ‘open’, ‘closed’, ‘settled’, ‘determined’. Note that the API accepts ‘open’ for filtering but returns ‘active’ in the response. Leave empty to return markets with any status.	[optional]
-tickers	str	Filter by specific market tickers. Comma-separated list of market tickers to retrieve.	[optional]
+limit
+integer
+Number of results per page. Defaults to 100. Maximum value is 1000.
+
 ​
-Return type
-GetMarketsResponse
+cursor
+string
+Pagination cursor. Use the cursor value returned from the previous response to get the next page of results. Leave empty for the first page.
+
 ​
-HTTP response details
-Status code	Description
-200	Markets retrieved successfully
-400	Bad request - invalid input
-401	Unauthorized - authentication required
-500	Internal server error
-[Back to top] [Back to API list] [Back to Model list] [Back to README]
+event_ticker
+string
+Filter markets by event ticker. Returns only markets belonging to the specified event.
+
 ​
-get_trades
-GetTradesResponse get_trades(limit=limit, cursor=cursor, ticker=ticker, min_ts=min_ts, max_ts=max_ts)
+series_ticker
+string
+Filter markets by series ticker. Returns only markets belonging to events in the specified series.
+
+​
+max_close_ts
+integer
+Filter markets that close before this Unix timestamp.
+
+​
+min_close_ts
+integer
+Filter markets that close after this Unix timestamp.
+
+​
+status
+string
+Filter by market status. Comma-separated list. Possible values: 'unopened', 'open', 'closed', 'settled'. Leave empty to return markets with any status.
+
+​
+tickers
+string
+Filter by specific market tickers. Comma-separated list of market tickers to retrieve.
+
+Response
+200 - application/json
+​
+cursor
+string
+​
+markets
+object[]
+
+
+
 Get Trades
-Get all trades for all markets.
-A trade represents a completed transaction between two users on a specific market. Each trade includes the market ticker, price, quantity, and timestamp information.
-This endpoint returns a paginated response. Use the ‘limit’ parameter to control page size (1-1000, defaults to 100). The response includes a ‘cursor’ field - pass this value in the ‘cursor’ parameter of your next request to get the next page. An empty cursor indicates no more pages are available.
-​
-Example
+
 
 Copy
 
 Ask AI
-import kalshi_python
-from kalshi_python.models.get_trades_response import GetTradesResponse
-from kalshi_python.rest import ApiException
-from pprint import pprint
+curl --request GET \
+  --url https://api.elections.kalshi.com/trade-api/v2/markets/trades
 
-# Defining the host is optional and defaults to https://api.elections.kalshi.com/trade-api/v2
-# See configuration.py for a list of all supported configuration parameters.
-configuration = kalshi_python.Configuration(
-    host = "https://api.elections.kalshi.com/trade-api/v2"
-)
+200
+
+Copy
+
+Ask AI
+{
+  "cursor": "<string>",
+  "trades": [
+    {
+      "count": 123,
+      "created_time": "<any>",
+      "no_price": 123,
+      "taker_side": "yes",
+      "ticker": "<string>",
+      "trade_id": "<string>",
+      "yes_price": 123
+    }
+  ]
+}
 
 
-# Initialize the Kalshi client
-client = kalshi_python.KalshiClient(configuration)
+Get Trades
+Endpoint for getting all trades for all markets. A trade represents a completed transaction between two users on a specific market. Each trade includes the market ticker, price, quantity, and timestamp information. This endpoint returns a paginated response. Use the ‘limit’ parameter to control page size (1-1000, defaults to 100). The response includes a ‘cursor’ field - pass this value in the ‘cursor’ parameter of your next request to get the next page. An empty cursor indicates no more pages are available.
 
-limit = 100 # int | Number of results per page. Defaults to 100. Maximum value is 1000. (optional) (default to 100)
+GET
+/
+markets
+/
+trades
 
-cursor = 'cursor_example' # str | Pagination cursor. Use the cursor value returned from the previous response to get the next page of results. Leave empty for the first page. (optional)
-
-ticker = 'ticker_example' # str | Filter by market ticker (optional)
-
-min_ts = 56 # int | Filter items after this Unix timestamp (optional)
-
-max_ts = 56 # int | Filter items before this Unix timestamp (optional)
-
-try:
-    # Get Trades
-    api_response = client.get_trades(limit=limit, cursor=cursor, ticker=ticker, min_ts=min_ts, max_ts=max_ts)
-    print("The response of MarketsApi->get_trades:\n")
-    pprint(api_response)
-except Exception as e:
-    print("Exception when calling MarketsApi->get_trades: %s\n" % e)
+Try it
+Query Parameters
 ​
-Parameters
-Name	Type	Description	Notes
-limit	int	Number of results per page. Defaults to 100. Maximum value is 1000.	[optional] [default to 100]
-cursor	str	Pagination cursor. Use the cursor value returned from the previous response to get the next page of results. Leave empty for the first page.	[optional]
-ticker	str	Filter by market ticker	[optional]
-min_ts	int	Filter items after this Unix timestamp	[optional]
-max_ts	int	Filter items before this Unix timestamp	[optional]
+limit
+integer
+Number of results per page. Defaults to 100. Maximum value is 1000.
+
 ​
-Return type
-GetTradesResponse
+cursor
+string
+Pagination cursor. Use the cursor value returned from the previous response to get the next page of results. Leave empty for the first page.
+
 ​
-HTTP response details
-Status code	Description
-200	Trades retrieved successfully
-400	Bad request - invalid input
-500	Internal server error
+ticker
+string
+Filter trades by market ticker. Returns only trades for the specified market.
+
+​
+min_ts
+integer
+Filter trades that occurred after this Unix timestamp.
+
+​
+max_ts
+integer
+Filter trades that occurred before this Unix timestamp.
+
+Response
+200 - application/json
+​
+cursor
+string
+The Cursor represents a pointer to the next page of records in the pagination. Use the value returned here in the cursor query parameter for this end-point to get the next page containing limit records. An empty value of this field indicates there is no next page.
+
+​
+trades
+object[]
+
+
+
+
+Get Market
+
+
+Copy
+
+Ask AI
+curl --request GET \
+  --url https://api.elections.kalshi.com/trade-api/v2/markets/{ticker}
+
+200
+
+Copy
+
+Ask AI
+{
+  "market": {
+    "ticker": "<string>",
+    "event_ticker": "<string>",
+    "market_type": "<string>",
+    "title": "<string>",
+    "subtitle": "<string>",
+    "yes_sub_title": "<string>",
+    "no_sub_title": "<string>",
+    "open_time": "2023-11-07T05:31:56Z",
+    "close_time": "2023-11-07T05:31:56Z",
+    "expiration_time": "2023-11-07T05:31:56Z",
+    "latest_expiration_time": "2023-11-07T05:31:56Z",
+    "settlement_timer_seconds": 123,
+    "status": "<string>",
+    "response_price_units": "<string>",
+    "notional_value": 123,
+    "notional_value_dollars": "0.2300",
+    "tick_size": 123,
+    "yes_bid": 123,
+    "yes_bid_dollars": "0.2300",
+    "yes_ask": 123,
+    "yes_ask_dollars": "0.2300",
+    "no_bid": 123,
+    "no_bid_dollars": "0.2300",
+    "no_ask": 123,
+    "no_ask_dollars": "0.2300",
+    "last_price": 123,
+    "last_price_dollars": "0.2300",
+    "previous_yes_bid": 123,
+    "previous_yes_bid_dollars": "0.2300",
+    "previous_yes_ask": 123,
+    "previous_yes_ask_dollars": "0.2300",
+    "previous_price": 123,
+    "previous_price_dollars": "0.2300",
+    "volume": 123,
+    "volume_24h": 123,
+    "liquidity": 123,
+    "liquidity_dollars": "0.2300",
+    "open_interest": 123,
+    "result": "<string>",
+    "can_close_early": true,
+    "expiration_value": "<string>",
+    "category": "<string>",
+    "risk_limit_cents": 123,
+    "rules_primary": "<string>",
+    "rules_secondary": "<string>",
+    "settlement_value": 123,
+    "settlement_value_dollars": "0.2300"
+  }
+}
+Get Series List
+
+
+Copy
+
+Ask AI
+curl --request GET \
+  --url https://api.elections.kalshi.com/trade-api/v2/series
+
+200
+
+Copy
+
+Ask AI
+{
+  "series": [
+    {
+      "additional_prohibitions": [
+        "<string>"
+      ],
+      "category": "<string>",
+      "contract_terms_url": "<string>",
+      "contract_url": "<string>",
+      "fee_multiplier": 123,
+      "fee_type": "quadratic",
+      "frequency": "<string>",
+      "product_metadata": {
+        "key": {}
+      },
+      "settlement_sources": [
+        "<any>"
+      ],
+      "tags": [
+        "<string>"
+      ],
+      "ticker": "<string>",
+      "title": "<string>"
+    }
+  ]
+}
+
+
+Get Series List
+Endpoint for getting data about multiple series with specified filters. A series represents a template for recurring events that follow the same format and rules (e.g., “Monthly Jobs Report”, “Weekly Initial Jobless Claims”, “Daily Weather in NYC”). This endpoint allows you to browse and discover available series templates by category.
+
+GET
+/
+series
+
+Try it
+Query Parameters
+​
+category
+stringrequired
+Filter series by category. Returns only series belonging to the specified category.
+
+​
+include_product_metadata
+boolean
+Include additional product metadata in the response for each series.
+
+​
+tags
+string
+Comma separated list of tags to filter series by. If specified, only series containing at least one of these tags will be returned.
+
+Response
+200 - application/json
+​
+series
+object[]
+
+
+Get Series
+
+
+Copy
+
+Ask AI
+curl --request GET \
+  --url https://api.elections.kalshi.com/trade-api/v2/series/{series_ticker}
+
+200
+
+Copy
+
+Ask AI
+{
+  "series": {
+    "additional_prohibitions": [
+      "<string>"
+    ],
+    "category": "<string>",
+    "contract_terms_url": "<string>",
+    "contract_url": "<string>",
+    "fee_multiplier": 123,
+    "fee_type": "quadratic",
+    "frequency": "<string>",
+    "product_metadata": {
+      "key": {}
+    },
+    "settlement_sources": [
+      "<any>"
+    ],
+    "tags": [
+      "<string>"
+    ],
+    "ticker": "<string>",
+    "title": "<string>"
+  }
+}
+
+
+Get Series
+Endpoint for getting data about a specific series by its ticker. A series represents a template for recurring events that follow the same format and rules (e.g., “Monthly Jobs Report”, “Weekly Initial Jobless Claims”, “Daily Weather in NYC”). Series define the structure, settlement sources, and metadata that will be applied to each recurring event instance within that series.
+
+GET
+/
+series
+/
+{series_ticker}
+
+Try it
+Path Parameters
+​
+series_ticker
+stringrequired
+Series ticker - unique identifier for the specific series
+
+Response
+200 - application/json
+​
+series
+object
+Data for the series.

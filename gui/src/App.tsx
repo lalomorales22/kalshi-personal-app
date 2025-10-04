@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import MarketBrowser from './components/MarketBrowser'
 import Portfolio from './components/Portfolio'
@@ -6,12 +6,31 @@ import AIAssistant from './components/AIAssistant'
 import TradingPanel from './components/TradingPanel'
 import Settings from './components/Settings'
 import Sidebar from './components/Sidebar'
+import { api } from './utils/api'
+import type { Balance } from './types'
 
 type View = 'markets' | 'portfolio' | 'trade' | 'ai' | 'settings';
 
 function App() {
   const [currentView, setCurrentView] = useState<View>('markets');
   const [selectedMarket, setSelectedMarket] = useState<string | null>(null);
+  const [balance, setBalance] = useState<Balance | null>(null);
+
+  useEffect(() => {
+    loadBalance();
+    // Refresh balance every 30 seconds
+    const interval = setInterval(loadBalance, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const loadBalance = async () => {
+    try {
+      const data = await api.getBalance();
+      setBalance(data);
+    } catch (error) {
+      console.error('Failed to load balance:', error);
+    }
+  };
 
   const handleMarketSelect = (ticker: string) => {
     setSelectedMarket(ticker);
@@ -38,7 +57,9 @@ function App() {
           <div className="flex items-center gap-4">
             <div className="widget px-4 py-2">
               <span className="text-sm text-gray-400">Balance:</span>
-              <span className="ml-2 font-semibold text-neon-cyan">$0.00</span>
+              <span className="ml-2 font-semibold text-neon-cyan">
+                ${balance ? (balance.balance / 100).toFixed(2) : '0.00'}
+              </span>
             </div>
           </div>
         </div>

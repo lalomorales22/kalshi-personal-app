@@ -18,7 +18,17 @@ export default function MarketBrowser({ onSelectMarket }: MarketBrowserProps) {
 
   useEffect(() => {
     loadMarkets();
+    loadCategories();
   }, [filter]);
+
+  const loadCategories = async () => {
+    try {
+      const cats = await api.getCategories();
+      setCategories(cats);
+    } catch (error) {
+      console.error('Failed to load categories:', error);
+    }
+  };
 
   useEffect(() => {
     // Subscribe to real-time ticker updates
@@ -62,12 +72,6 @@ export default function MarketBrowser({ onSelectMarket }: MarketBrowserProps) {
         status: filter === 'all' ? undefined : filter
       });
       setMarkets(data);
-
-      // Extract unique categories
-      const cats = Array.from(new Set(
-        data.map(m => m.category || m.series_ticker || 'Other').filter(Boolean)
-      )).sort();
-      setCategories(cats);
     } catch (error) {
       console.error('Failed to load markets:', error);
     } finally {
